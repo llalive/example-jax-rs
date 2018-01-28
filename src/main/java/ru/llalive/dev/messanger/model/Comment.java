@@ -2,6 +2,9 @@ package ru.llalive.dev.messanger.model;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Comment {
 
 	private long id;
