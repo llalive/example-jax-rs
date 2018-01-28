@@ -50,8 +50,19 @@ public class MessageResource {
 
 	@GET
 	@Path("/{messageId}")
-	public Message getMessage(@PathParam("messageId") long id) {
-		return messageService.getMessage(id);
+	public Message getMessage(@PathParam("messageId") long id, @Context UriInfo uriInfo) {
+		Message message = messageService.getMessage(id);
+		message.addLink(getUriForSelf(uriInfo, message), "self");
+		return message;
+	}
+
+	private String getUriForSelf(UriInfo uriInfo, Message message) {
+		String selfLink = uriInfo.getAbsolutePathBuilder()
+						.path(MessageResource.class)
+						.path(Long.toString(message.getId()))
+						.build()
+						.toString();
+		return selfLink;
 	}
 
 	@PUT
