@@ -31,8 +31,7 @@ public class MessageResource {
 			return messageService.getAllMessagesForYear(filterBean.getYear());
 		}
 		if (filterBean.getStart() > 0 && filterBean.getSize() > 0) {
-			return messageService.getMessagesWithPagination(
-					filterBean.getStart(), filterBean.getSize());
+			return messageService.getMessagesWithPagination(filterBean.getStart(), filterBean.getSize());
 		}
 		return messageService.getAllMessages();
 	}
@@ -50,8 +49,7 @@ public class MessageResource {
 
 	@PUT
 	@Path("/{messageId}")
-	public Message updateMessage(@PathParam("messageId") long id,
-			Message message) {
+	public Message updateMessage(@PathParam("messageId") long id, Message message) {
 		message.setId(id);
 		return messageService.updateMessage(message);
 	}
@@ -60,6 +58,11 @@ public class MessageResource {
 	@Path("/{messageId}")
 	public void deleteMessage(@PathParam("messageId") long id) {
 		messageService.removeMessage(id);
+	}
+
+	@Path("/{messageId}/comments")
+	public CommentResource getCommentResource() {
+		return new CommentResource();
 	}
 
 }
