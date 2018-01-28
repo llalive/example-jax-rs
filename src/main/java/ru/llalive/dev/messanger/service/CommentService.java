@@ -5,8 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import ru.llalive.dev.messanger.database.DatabaseClass;
 import ru.llalive.dev.messanger.model.Comment;
+import ru.llalive.dev.messanger.model.ErrorMessage;
 import ru.llalive.dev.messanger.model.Message;
 
 public class CommentService {
@@ -26,7 +32,20 @@ public class CommentService {
 	}
 
 	public Comment getComment(long messageId, long commentId) {
-		return messages.get(messageId).getComments().get(commentId);
+		//bad practice - should be on presentation layer (just example)
+		ErrorMessage errorMessage = new ErrorMessage("Not found", 404, "http://dev.llalive.ru");
+		Response response = Response.status(Status.NOT_FOUND).entity(errorMessage).build();
+		
+		Message message = messages.get(messageId);
+		if(message == null) {
+			throw new WebApplicationException(response);
+		}
+		Map<Long, Comment> comments = message.getComments();
+		Comment comment = comments.get(commentId);
+		if(comment == null) {
+			throw new NotFoundException(response);
+		}
+		return comment;
 	}
 
 	public Comment addComment(long messageId, Comment comment) {
